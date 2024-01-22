@@ -1,12 +1,48 @@
-    import * as fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 
 ( async () => {
 
     const createFile = async (path) => {
-       const file = await fs.appendFile(path,'');
+        try {
+            const fileExist = await fs.open(path, 'r');
+            fileExist.close();
+            return console.log(`The file ${path} alrealdy exists.`);
+        } catch (error) {
+            const newFile = await fs.open(path,'w');
+            console.log("File successfuly created")
+            newFile.close()
+        }
+    }
+    
+    const deleteFile = async (path) => {
+        try {
+            await fs.unlink(path);
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                console.log('No such file exists at path ' + path);
+                return
+            }
+            
+            console.log(error)
+        }
     }
 
-    const CREATE_FILE = "create a file"
+    const renameFile = async (oldPath, newPath) => {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+    const appendFile = async (path, content) => {
+
+    }
+
+    const CREATE_FILE = "create file";
+    const DELETE_FILE = "delete file";
+    const RENAME_FILE = "rename file";
+    const APPEND_FILE = "append file";
 
     const watcher = fs.watch('./command.txt');
     const commandFile = await fs.open('./command.txt', 'r')
@@ -31,7 +67,29 @@
         if (command.includes(CREATE_FILE)) {
             const filePath = command.substring(CREATE_FILE.length + 1);
             createFile(filePath)
-            console.log(filePath)
+        }
+
+        if (command.includes(DELETE_FILE)) {
+            const filePath = command.substring(DELETE_FILE.length + 1);
+            deleteFile(filePath)
+        }
+
+        if (command.includes(RENAME_FILE)) {
+            const _idx = command.indexOf(" to ");
+            
+            const oldPath = command.substring(RENAME_FILE.length + 1, _idx);
+            const newPath = command.substring(_idx + 4);
+            
+            renameFile(oldPath,newPath);
+        }
+
+        if (command.includes(APPEND_FILE)) {
+            const contentFlagIndex = command.indexOf(" content ")
+            
+            const filePath = command.substring(APPEND_FILE.length + 1, contentFlagIndex);
+            const content = command.substring(contentFlagIndex + (" content ").length);
+
+            appendFile(filePath, content);
         }
     })
 
