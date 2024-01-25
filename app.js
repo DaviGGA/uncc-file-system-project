@@ -1,43 +1,13 @@
 import * as fs from 'node:fs/promises';
 
+import { 
+    createFile, 
+    deleteFile,
+    appendFile, 
+    renameFile 
+} from './operations.js';
+
 ( async () => {
-
-    const createFile = async (path) => {
-        try {
-            const fileExist = await fs.open(path, 'r');
-            fileExist.close();
-            return console.log(`The file ${path} alrealdy exists.`);
-        } catch (error) {
-            const newFile = await fs.open(path,'w');
-            console.log("File successfuly created")
-            newFile.close()
-        }
-    }
-    
-    const deleteFile = async (path) => {
-        try {
-            await fs.unlink(path);
-        } catch (error) {
-            if (error.code === 'ENOENT') {
-                console.log('No such file exists at path ' + path);
-                return
-            }
-            
-            console.log(error)
-        }
-    }
-
-    const renameFile = async (oldPath, newPath) => {
-        try {
-            
-        } catch (error) {
-            
-        }
-    }
-
-    const appendFile = async (path, content) => {
-
-    }
 
     const CREATE_FILE = "create file";
     const DELETE_FILE = "delete file";
@@ -94,8 +64,7 @@ import * as fs from 'node:fs/promises';
     })
 
     for await (const event of watcher) {
-        const commandFileChanged = event.eventType === 'change'
-        
+        const commandFileChanged = event.eventType === 'change' 
         if (commandFileChanged) {
             commandFile.emit("change")
         }

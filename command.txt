@@ -1,1 +1,1 @@
-delete file oii.txt
+rename file hii.txt to bye.txt
